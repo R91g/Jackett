@@ -1,7 +1,7 @@
 ---
   site: 3dtorrents
   name: 3D Torrents
-  description: "3D Movie tracker"
+  description: "3D Torrents (3DT) is a Private Torrent Tracker for 3D HD / BLURAY MOVIES"
   language: en-us
   type: private
   encoding: UTF-8
@@ -48,9 +48,6 @@
       - selector: span.errormsg
     test:
       path: index.php
-
-  download:
-    selector: a[href^="download.php?id="]
         
   search:
     paths:

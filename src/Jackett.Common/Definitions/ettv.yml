@@ -6,7 +6,9 @@
   type: public
   encoding: UTF-8
   links:
-    - https://www.ettv.tv
+    - https://www.ettv.to/
+  legacylinks:
+    - https://www.ettv.tv/
 
   caps:
     categorymappings:
@@ -52,16 +54,25 @@
       tv-search: [q, season, ep]
       movie-search: [q]
 
-  settings: []
+  settings:
+    - name: downloadlink
+      type: select
+      label: Download link
+      default: "magnet:"
+      options:
+        "https://etorrent.click/" : "eTorrent.click"
+        "magnet:": "magnet"
   
   download:
-    selector: a[href^="magnet:"]
+    selector: a[href^="{{ .Config.downloadlink }}"]
 
   search:
-    path: torrents-search.php
+    path: "{{if .Keywords}}torrents-search.php{{else}}torrents.php{{end}}"
     inputs:
       $raw: "{{range .Categories}}c{{.}}=1&{{end}}"
       search: "{{ .Keywords }}"
+      sort: "id"
+      order: "desc"
       incldead: "1"
     keywordsfilters:
       - name: replace

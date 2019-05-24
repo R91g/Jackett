@@ -13,6 +13,8 @@ using CloudFlareUtilities;
 using Jackett.Common.Models.Config;
 using Jackett.Common.Services.Interfaces;
 using NLog;
+using Jackett.Common.Helpers;
+using System.Diagnostics;
 
 namespace Jackett.Common.Utils.Clients
 {
@@ -28,6 +30,34 @@ namespace Jackett.Common.Utils.Clients
         static protected Dictionary<string, ICollection<string>> trustedCertificates = new Dictionary<string, ICollection<string>>();
         static protected string webProxyUrl;
         static protected IWebProxy webProxy;
+
+        [DebuggerNonUserCode] // avoid "Exception User-Unhandled" Visual Studio messages
+        static public bool ValidateCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            if (sender.GetType() != typeof(HttpWebRequest))
+                return sslPolicyErrors == SslPolicyErrors.None;
+
+            var request = (HttpWebRequest)sender;
+            var hash = certificate.GetCertHashString();
+
+            ICollection<string> hosts;
+
+            trustedCertificates.TryGetValue(hash, out hosts);
+            if (hosts != null)
+            {
+                if (hosts.Contains(request.Host))
+                    return true;
+            }
+
+            if (sslPolicyErrors != SslPolicyErrors.None)
+            {
+                // Throw exception with certificate details, this will cause a "Exception User-Unhandled" when running it in the Visual Studio debugger.
+                // The certificate is only available inside this function, so we can't catch it at the calling method.
+                throw new Exception("certificate validation failed: " + certificate.ToString());
+            }
+
+            return sslPolicyErrors == SslPolicyErrors.None;
+        }
 
         static public void InitProxy(ServerConfig serverConfig)
         {
@@ -93,7 +123,7 @@ namespace Jackett.Common.Utils.Clients
         public void CreateClient()
         {
             clearanceHandlr = new ClearanceHandler();
-            clearanceHandlr.ClearanceDelay = 7000; // 2018/03/22: something odd is going on with cloudflare, for a few users higher delays are needed (depending on which server you end up?)
+            clearanceHandlr.MaxRetries = 30;
             clientHandlr = new HttpClientHandler
             {
                 CookieContainer = cookies,
@@ -133,24 +163,7 @@ namespace Jackett.Common.Utils.Clients
             ServicePointManager.SecurityProtocol = (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
 
             // custom handler for our own internal certificates
-            ServicePointManager.ServerCertificateValidationCallback += delegate (object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-            {
-                if (sender.GetType() != typeof(HttpWebRequest))
-                    return sslPolicyErrors == SslPolicyErrors.None;
-
-                var request = (HttpWebRequest)sender;
-                var hash = certificate.GetCertHashString();
-
-                ICollection<string> hosts;
-
-                trustedCertificates.TryGetValue(hash, out hosts);
-                if (hosts != null)
-                {
-                    if (hosts.Contains(request.Host))
-                        return true;
-                }
-                return sslPolicyErrors == SslPolicyErrors.None;
-            };
+            ServicePointManager.ServerCertificateValidationCallback += ValidateCertificate;
         }
 
         override protected async Task<WebClientByteResult> Run(WebRequest webRequest)
@@ -277,7 +290,13 @@ namespace Jackett.Common.Utils.Clients
             // See issue #1200
             if (result.RedirectingTo != null && result.RedirectingTo.StartsWith("file://"))
             {
-                var newRedirectingTo = result.RedirectingTo.Replace("file://", request.RequestUri.Scheme + "://" + request.RequestUri.Host);
+                // URL decoding apparently is needed to, without it e.g. Demonoid download is broken
+                // TODO: is it always needed (not just for relative redirects)?
+                var newRedirectingTo = WebUtilityHelpers.UrlDecode(result.RedirectingTo, webRequest.Encoding);
+                if (newRedirectingTo.StartsWith("file:////")) // Location without protocol but with host (only add scheme)
+                    newRedirectingTo = newRedirectingTo.Replace("file://", request.RequestUri.Scheme + ":");
+                else
+                    newRedirectingTo = newRedirectingTo.Replace("file://", request.RequestUri.Scheme + "://" + request.RequestUri.Host);
                 logger.Debug("[MONO relative redirect bug] Rewriting relative redirect URL from " + result.RedirectingTo + " to " + newRedirectingTo);
                 result.RedirectingTo = newRedirectingTo;
             }

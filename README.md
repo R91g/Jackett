@@ -2,7 +2,6 @@
 
 [![GitHub issues](https://img.shields.io/github/issues/Jackett/Jackett.svg?maxAge=60&style=flat-square)](https://github.com/Jackett/Jackett/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/Jackett/Jackett.svg?maxAge=60&style=flat-square)](https://github.com/Jackett/Jackett/pulls)
-[![Bountysource](https://img.shields.io/bountysource/team/jackett/activity.svg?style=flat-square)](https://www.bountysource.com/teams/jackett)
 [![Build status](https://ci.appveyor.com/api/projects/status/gaybh5mvyx418nsp/branch/master?svg=true)](https://ci.appveyor.com/project/Jackett/jackett)
 [![Github Releases](https://img.shields.io/github/downloads/Jackett/Jackett/total.svg?maxAge=60&style=flat-square)](https://github.com/Jackett/Jackett/releases/latest)
 [![Docker Pulls](https://img.shields.io/docker/pulls/linuxserver/jackett.svg?maxAge=60&style=flat-square)](https://hub.docker.com/r/linuxserver/jackett/)
@@ -10,286 +9,396 @@
 
 This project is a new fork and is recruiting development help.  If you are able to help out please contact us.
 
-Jackett works as a proxy server: it translates queries from apps ([Sonarr](https://github.com/Sonarr/Sonarr), [Radarr](https://github.com/Radarr/Radarr), [SickRage](https://sickrage.github.io/), [CouchPotato](https://couchpota.to/), [Mylar](https://github.com/evilhero/mylar), [DuckieTV](https://github.com/SchizoDuckie/DuckieTV), etc) into tracker-site-specific http queries, parses the html response, then sends results back to the requesting software. This allows for getting recent uploads (like RSS) and performing searches. Jackett is a single repository of maintained indexer scraping & translation logic - removing the burden from other apps.
+Jackett works as a proxy server: it translates queries from apps ([Sonarr](https://github.com/Sonarr/Sonarr), [Radarr](https://github.com/Radarr/Radarr), [SickRage](https://sickrage.github.io/), [CouchPotato](https://couchpota.to/), [Mylar](https://github.com/evilhero/mylar), [Lidarr](https://github.com/lidarr/lidarr), [DuckieTV](https://github.com/SchizoDuckie/DuckieTV), [qBittorrent](https://www.qbittorrent.org/), [Nefarious](https://github.com/lardbit/nefarious) etc) into tracker-site-specific http queries, parses the html response, then sends results back to the requesting software. This allows for getting recent uploads (like RSS) and performing searches. Jackett is a single repository of maintained indexer scraping & translation logic - removing the burden from other apps.
 
 Developer note: The software implements the [Torznab](https://github.com/Sonarr/Sonarr/wiki/Implementing-a-Torznab-indexer) (with [nZEDb](https://github.com/nZEDb/nZEDb/blob/dev/docs/newznab_api_specification.txt) category numbering) and [TorrentPotato](https://github.com/RuudBurger/CouchPotatoServer/wiki/Couchpotato-torrent-provider) APIs.
 
 
 
 #### Supported Systems
-* Windows using .NET 4.5.2 [Download here](https://www.microsoft.com/net/framework/versions/net452).
-* Linux and macOS using Mono 4.6.0 and above. [Download here](http://www.mono-project.com/download/). Earlier versions of mono may work but some trackers may fail to negotiate SSL correctly, and others may cause Jackett to crash when used.
+* Windows 7SP1 or greater using .NET 4.6.1 or above [Download here](https://www.microsoft.com/net/framework/versions/net461)
+* Linux ([supported operating systems here](https://github.com/dotnet/core/blob/master/release-notes/2.1/2.1-supported-os.md))
+* macOS 10.12 or greater
 
 ### Supported Public Trackers
  * 1337x
+ * ACG.RIP
  * Anidex
  * Anime Tosho
  * AniRena
+ * AudioBook Bay (ABB)
  * btbit
  * BTDB
- * BT-Scene
+ * BTDigg
+ * BTKitty
+ * ConCen
  * cpasbien
+ * cpasbienClone
+ * DIGBT
  * ETTV
+ * EliteTorrent.biz
  * ExtraTorrent.ag
  * EZTV
  * Frozen Layer
  * GkTorrent
  * Horrible Subs
- * Idope
  * Il Corsaro Nero <!-- maintained by bonny1992 -->
+ * Il Corsaro Blu
  * Isohunt2
- * KickAssTorrent
+ * KATcrs
+ * KickAssTorrent (KATcr)
  * KickAssTorrent (thekat.se clone)
+ * KikiBT
  * LimeTorrents
- * MagnetDL
- * NextTorrent
+ * MacTorrents
+ * MejorTorrent <!-- maintained by ivandelabeldad -->
+ * Monova
+ * Newpct (aka: tvsinpagar, descargas2020, torrentlocura, torrentrapid, tumejortorrent, pctnew, etc)
  * Nyaa.si
  * Nyaa-Pantsu
  * Nyoo
+ * ProStyleX
+ * QXR
  * RARBG
  * RuTor
+ * shokweb
  * ShowRSS
- * The Pirate Bay
+ * SkyTorrentsClone
+ * SolidTorrents
+ * sukebei.Nyaa.si
+ * sukebei-Pantsu
+ * The Pirate Bay (TPB)
  * TNTVillage <!-- maintained by bonny1992 -->
- * Tokyo Toshokan
+ * Tokyo Tosho
  * Torlock
- * Torrent Downloads
+ * Torrent Downloads (TD)
+ * TorrentFunk
+ * TorrentGalaxy.org (TGx)
+ * TorrentKitty
+ * TorrentProject2
+ * Torrents.csv
  * Torrent9
- * TorrentKim
+ * Torernt9 clone (torrents9.ch)
  * Torrentz2
  * World Wide Torrents
- * YIFY (YTS)
  * YTS.ag
  * Zooqle
 
 ### Supported Semi-Private Trackers
  * 7tor
+ * Alein
+ * ArenaBG
  * CzTorrent
  * Deildu
+ * Film-Paleis
  * Gay-Torrents.net
+ * Gay-Torrents.org
+ * GDF76
  * Kinozal
  * LostFilm.tv
- * Mega-Bliz
  * Metal Tracker
  * MVGroup Forum
  * MVGroup Main
  * Newstudio
- * NetHD
- * NoName Club
+ * NetHD (VietTorrent)
+ * NoName Club (NNM-Club)
+ * RockBox
  * RuTracker
+ * Sharewood
  * SkTorrent
+ * SoundPark
+ * Torrents-Local
  * Union Fansub
- * Xtreme Zone
- * YggTorrent
+ * Vanila
+ * XtreMeZone (MYXZ)
+ * YggTorrent (YGG)
  * Ztracker
 
 ### Supported Private Trackers
  * 2 Fast 4 You
- * 3D Torrents
+ * 3D Torrents (3DT) 
+ * 3evils
+ * 720pier
  * Abnormal
- * Acid-Lounge
- * AlphaRatio
- * Andraste
- * AnimeBytes
- * AnimeTorrents
- * AOX
- * Apollo (XANAX)
- * ArabaFenice
- * Arche Torrent
+ * Acid Lounge (A-L)
+ * Aftershock
+ * AlphaRatio (AR)
+ * AmigosShareClub
+ * AnimeBytes (AB)
+ * AnimeTorrents (AnT)
+ * Anthelion
+ * AOX (Chippu)
+ * Araba Fenice (Phoenix)
+ * AsianCinema
  * AsianDVDClub
  * AST4u
- * Audiobook Torrents
- * Awesome-HD
- * Avistaz
+ * Audiobook Torrents (ABT)
+ * AudioNews (AN)
+ * Awesome-HD (AHD)
+ * AVG (Audio Video Games)
+ * Avistaz (AsiaTorrents)
  * B2S-Share
  * Back-ups
- * BakaBT  [![(invite needed)][inviteneeded]](#)
- * bB
- * BeyondHD
+ * BakaBT
+ * BaconBits (bB)
+ * BeyondHD (BHD)
  * BIGTorrent
+ * BigTower
  * Bit-City Reloaded
  * BIT-HDTV
- * Bithorlo
+ * BiT-TiTAN
+ * Bithorlo (BHO)
  * BitHUmen
  * BitMe
  * BitMeTV
- * BitSoup  [![(invite needed)][inviteneeded]](#)
+ * BitsPiracy
  * Bitspyder
- * BitTorrentFiles  [![(invite needed)][inviteneeded]](#)
- * BJ-Share
+ * BitTorrentFiles
+ * BitTurk
+ * BJ-Share (BJ)
  * BlueBird
- * Blutopia
+ * Blutopia (BLU)
  * Brasil Tracker
- * BroadcastTheNet
+ * BroadcastTheNet (BTN)
  * BrokenStones
- * BTNext
+ * BTGigs (TG)
+ * BTNext (BTNT)
  * Carpathians
+ * CartoonChaos (CC)
+ * CasaTorrent
+ * CasStudioTV
  * CCFBits
  * CGPeers
  * CHDBits
- * Cinematik
+ * ChannelX
+ * CiNEFiLHD
  * Cinemageddon
- * CinemaZ
+ * Cinematik
+ * CinemaZ (EuTorrents)
  * Classix
- * DanishBits
- * DataScene
- * Demonoid
+ * CrnaBerza
+ * DanishBits (DB)
+ * Dark-Shadow
+ * Das Unerwartete
+ * DataScene (DS)
+ * DesiReleasers
+ * DesiTorrents
  * Diablo Torrent
+ * DigitalCore
  * DigitalHive
+ * DivTeam
+ * DocumentaryTorrents (DT)
  * Downloadville
  * Dragonworld Reloaded
  * Dream Team
- * EliteHD  [![(invite needed)][inviteneeded]](#)
- * Elit Tracker
+ * DXDHD
+ * EfectoDoppler
+ * EliteHD (HDClub) [![(invite needed)][inviteneeded]](#)
+ * Elit Tracker (ET)
  * Elite-Tracker
- * Empornium
- * EoT-Forum
- * eStone
+ * Empornium (EMP)
+ * eStone (XiDER, BeLoad)
  * Ethor.net (Thor's Land)
  * FANO.IN
- * FileList
+ * FileList (FL)
  * Femdomcult
- * Freedom-HD
+ * FocusX
+ * FreeTorrent
  * FullMixMusic
- * FunFile
- * FunkyTorrents
- * Fuzer
- * GayTorrent.ru
- * GazelleGames
- * GFTracker
- * Gfxnews
+ * FunFile (FF)
+ * FunkyTorrents (FT)
+ * Fuzer (FZ)
+ * GAYtorrent.ru
+ * GazelleGames (GGn)
+ * Generation-Free
+ * GFXNews
  * GFXPeers
  * GigaTorrents
- * GimmePeers <!-- maintained by jamesb2147 -->
- * GODS  [![(invite needed)][inviteneeded]](#)
+ * GimmePeers (formerly ILT) <!-- maintained by jamesb2147 -->
+ * GiroTorrent
  * Greek Team
  * HacheDe
  * Hardbay
- * HD-Forever
- * HD-Only
- * HD-Space
- * HD-Torrents
+ * HD4Free (HD4)
+ * HD-Forever (HDF)
+ * HD-Only (HDO)
+ * HD-Space (HDS)
+ * HD-Spain
+ * HD-Torrents (HDT)
  * HD-Bits.com
+ * HDArea (HDA)
  * HDBits
- * HDChina
+ * HDCenter
+ * HDChina (HDWing)
  * HDCity
- * HDHome
+ * HDHome (HDBigger)
  * HDME
  * HDSky
  * HDTorrents.it
  * Hebits
  * Hon3y HD
+ * HQSource (HQS)
+ * HuSh 
  * Hyperay
  * ICE Torrent
- * I Love Classics
- * Immortalseed
+ * iLoveClassics (iLC)
+ * ImmortalSeed (iS)
  * inPeril
  * Insane Tracker
- * IPTorrents
+ * IPTorrents (IPT)
  * JPopsuki
  * Kapaki
  * Karagarga
+ * Le Saloon
  * LinkoManija
  * LosslessClub
- * M-Team - TP
- * Magico
- * Majomparádé
+ * M-Team TP (MTTP)
+ * Magico (Trellas)
+ * Majomparádé (TurkDepo)
  * Manicomio Share
+ * Mega-Bliz
  * Mononoké-BT
- * MoreThanTV
- * MyAnonamouse
+ * MoreThanTV (MTV)
+ * MyAnonamouse (MAM)
  * myAmity
  * MySpleen
  * NCore
- * Nebulance
+ * Nebulance (NBL) (TransmiTheNet)
  * New Real World
- * Norbits <!-- added by DiseaseNO but no longer maintained? -->
+ * Norbits
+ * NordicBits (NB)
+ * Nostalgic (The Archive)
  * notwhat.cd
- * Ourbits
+ * Orpheus
+ * Ourbits (HDPter)
+ * P2PBG
  * Passione Torrent <!-- maintained by bonny1992 -->
- * PassThePopcorn  [![(invite needed)][inviteneeded]](#)
- * PirateTheNet
- * PiXELHD
- * PolishSource
+ * PassThePopcorn (PTP)
+ * Peers.FM
+ * PiratBit
+ * PirateTheNet (PTN)
+ * PiXELHD (PxHD)
+ * Pleasuredome
+ * PolishSource (PS)
  * PolishTracker
  * Pretome
- * PrivateHD
+ * PrivateHD (PHD)
+ * ProAudioTorrents (PAT)
  * Psytorrents
- * PTFiles
+ * PT99
+ * PTFiles (PTF)
+ * PThome
  * PuntoTorrent
+ * PWTorrents (PWT)
+ * Racing4Everyone (R4E)
+ * RacingForMe (RFM)
  * Redacted (PassTheHeadphones)
+ * Red Star Torrent (RST)
+ * RetroFlix
  * RevolutionTT
- * RoDVD
+ * RGU
+ * RocketHD
+ * RoDVD (Cinefiles)
+ * Romanian Metal Torrent (RMT)
  * SceneFZ
+ * SceneHD
  * SceneReactor
+ * SceneRush
  * SceneTime
  * SDBits
  * Secret Cinema
  * Shareisland
  * ShareSpaceDB
  * Shazbat
- * Shellife
+ * Shellife (SL)
+ * SiamBIT
+ * SpaceTorrent
  * Speed-Share
  * SpeedCD
  * SpeedTorrent Reloaded
- * SportsCult
  * SportHD
- * Superbits
- * Synthesiz3r
+ * SportsCult
+ * SuperBits (SBS)
+ * TakeaByte
+ * Tapochek
  * Tasmanit
  * TBPlus
- * The Empire
+ * TeamHD
+ * TenYardTorrents (TYT)
+ * TheEmpire (TE)
  * The Geeks
- * The Horror Charnel
+ * The Horror Charnel (THC)
  * The Occult
  * The New Retro
  * The Place
- * The Shinning
+ * The Shinning (TsH)
  * The Show
- * The Vault
  * The-Torrents
- * TenYardTracker
- * Torrent Network
- * Torrent Sector Crew
+ * The Vault
+ * Tigers-dl
+ * Torrent Network (TN)
+ * Torrent Sector Crew (TSC)
  * Torrent.LT
  * TorrentBD
- * TorrentBytes
- * TorrentCCF  [![(invite needed)][inviteneeded]](#)
- * TorrentDay
- * Torrentech
+ * TorrentBytes (TBy)
+ * TorrentCCF (TCCF)
+ * TorrentDay (TD)
+ * Torrentech (TTH)
  * TorrentHeaven
  * TorrentHR
- * Torrenting
+ * Torrenting (TT)
  * Torrentland
- * TorrentLeech
- * Torrents.Md
- * TorrentSeeds
+ * TorrentLeech (TL)
+ * TorrentSeeds (TS)
  * Torrent-Syndikat
- * TorrentWTF
- * TorViet
+ * TOrrent-tuRK (TORK)
+ * TorViet  (HDVNBits)
+ * TotallyKids (TK)
  * ToTheGlory
  * TranceTraffic
  * Trezzor
- * TV Chaos UK
+ * TurkTorrent (TT)
+ * TV Chaos UK (TVCUK)
  * TV-Vault
+ * TVstore
  * u-torrents (SceneFZ)
  * UHDBits
- * Ultimate Gamer Club
+ * Ultimate Gamer Club (UGC)
+ * UnionGang
+ * Vizuk
  * Waffles
  * World-In-HD
- * WorldOfP2P
- * x264
+ * World-of-Tomorrow
+ * WorldOfP2P (WOP)
+ * x-ite.me (XM)
  * xBytesV2
- * XSpeeds
+ * XSpeeds (XS)
+ * XKTorrent
+ * XWTorrents (XWT)
  * Xthor
- * Your Exotic Torrents
+ * ExoticaZ (YourExotic)
  * Zamunda.net
  * Zelka.org
 
 Trackers marked with  [![(invite needed)][inviteneeded]](#) have no active maintainer and are missing features or are broken. If you have an invite for them please send it to kaso1717 -at- gmail.com to get them fixed/improved.
 
-## Installation on Windows
+### Aggregate indexers
 
+A special "all" indexer is available at `/api/v2.0/indexers/all/results/torznab/api`.
+It will query all configured indexers and return the combined results.
+
+If your client supports multiple feeds it's recommended to add each indexer directly instead of using the all indexer.
+Using the all indexer has no advantages (besides reduced management overhead), only disadvantages:
+* you lose control over indexer specific settings (categories, search modes, etc.)
+* mixing search modes (IMDB, query, etc.) might cause low quality results
+* indexer specific categories (>= 100000) can't be used.
+* slow indexers will slow down the overall result
+* total results are limited to 1000
+
+To get all Jackett indexers including their capabilities you can use `t=indexers` on the all indexer. To get only configured/unconfigured indexers you can also add `configured=true/false` as query parameter.
+
+
+## Installation on Windows
 We recommend you install Jackett as a Windows service using the supplied installer. You may also download the zipped version if you would like to configure everything manually.
 
 To get started with using the installer for Jackett, follow the steps below:
@@ -305,8 +414,37 @@ When installed as a service the tray icon acts as a way to open/start/stop Jacke
 
 Jackett can also be run from the command line if you would like to see log messages (Ensure the server isn't already running from the tray/service). This can be done by using "JackettConsole.exe" (for Command Prompt), found in the Jackett data folder: "%ProgramData%\Jackett".
 
-## Installation on Linux
- 1. Install [Mono 4.6](http://www.mono-project.com/download/#download-lin) or better (using the latest stable release for your distribution is recommended)
+
+## Install on Linux (AMDx64)
+On most operating systems all the required dependencies will already be present. In case they are not, you can refer to this page https://docs.microsoft.com/en-us/dotnet/core/linux-prerequisites?tabs=netcore2x#linux-distribution-dependencies
+
+### Install as service
+1. Download and extract the latest `Jackett.Binaries.LinuxAMDx64.tar.gz` release from the [releases page](https://github.com/Jackett/Jackett/releases)
+2. To install Jackett as a service, open the Terminal and run `sudo ./install_service_systemd.sh` You need root permissions to install the service. The service will start on each logon. You can always stop it by running `systemctl stop jackett.service` from Terminal. You can start it again it using `systemctl start jackett.service`. Logs are stored as usual under `~/.config/Jackett/log.txt` and also in `journalctl -u jackett.service`.
+
+### Run without installing as a service
+Download and extract the latest `Jackett.Binaries.LinuxAMDx64.tar.gz` release from the [releases page](https://github.com/Jackett/Jackett/releases) and run Jackett with the command `./jackett`
+
+### home directory
+If you want to run it with a user without a /home directory you need to add `Environment=XDG_CONFIG_HOME=/path/to/folder` to your systemd file, this folder will be used to store your config files.  
+
+
+## Install on Linux (ARMv7 or above)
+On most operating systems all the required dependencies will already be present. In case they are not, you can refer to this page https://docs.microsoft.com/en-us/dotnet/core/linux-prerequisites?tabs=netcore2x#linux-distribution-dependencies
+
+### Install as service
+1. Download and extract the latest `Jackett.Binaries.LinuxARM32.tar.gz` or `Jackett.Binaries.LinuxARM64.tar.gz` (32 bit is the most common on ARM) release from the [releases page](https://github.com/Jackett/Jackett/releases) 
+2. To install Jackett as a service, open the Terminal and run `sudo ./install_service_systemd.sh` You need root permissions to install the service. The service will start on each logon. You can always stop it by running `systemctl stop jackett.service` from Terminal. You can start it again it using `systemctl start jackett.service`. Logs are stored as usual under `~/.config/Jackett/log.txt` and also in `journalctl -u jackett.service`.
+
+### Run without installing as a service
+Download and extract the latest `Jackett.Binaries.LinuxARM32.tar.gz` or `Jackett.Binaries.LinuxARM64.tar.gz` (32 bit is the most common on ARM) release from the [releases page](https://github.com/Jackett/Jackett/releases) and run Jackett with the command `./jackett`
+
+### home directory
+If you want to run it with a user without a /home directory you need to add `Environment=XDG_CONFIG_HOME=/path/to/folder` to your systemd file, this folder will be used to store your config files.  
+
+
+## Installation on Linux (ARMv6 or below)
+ 1. Install [Mono 5.8](http://www.mono-project.com/download/#download-lin) or better (using the latest stable release is recommended)
        * Follow the instructions on the mono website and install the `mono-devel` and the `ca-certificates-mono` packages.
        * On Red Hat/CentOS/openSUSE/Fedora the `mono-locale-extras` package is also required.
  2. Install  libcurl:
@@ -314,19 +452,27 @@ Jackett can also be run from the command line if you would like to see log messa
        * Redhat/Fedora: `yum install libcurl-devel`
        * For other distros see the  [Curl docs](http://curl.haxx.se/dlwiz/?type=devel).
  3. Download and extract the latest `Jackett.Binaries.Mono.tar.gz` release from the [releases page](https://github.com/Jackett/Jackett/releases) and run Jackett using mono with the command `mono --debug JackettConsole.exe`.
-
-Detailed instructions for [Ubuntu 14.x](http://www.htpcguides.com/install-jackett-on-ubuntu-14-x-for-custom-torrents-in-sonarr/) and [Ubuntu 15.x](http://www.htpcguides.com/install-jackett-ubuntu-15-x-for-custom-torrents-in-sonarr/)
+ 4. (Optional) To install Jackett as a service, open the Terminal and run `sudo ./install_service_systemd_mono.sh` You need root permissions to install the service. The service will start on each logon. You can always stop it by running `systemctl stop jackett.service` from Terminal. You can start it again it using `systemctl start jackett.service`. Logs are stored as usual under `~/.config/Jackett/log.txt` and also in `journalctl -u jackett.service`.
 
 If you want to run it with a user without a /home directory you need to add `Environment=XDG_CONFIG_HOME=/path/to/folder` to your systemd file, this folder will be used to store your config files.  
+
+Mono must be compiled with the Roslyn compiler (default), using MCS will cause "An error has occurred." errors (See https://github.com/Jackett/Jackett/issues/2704).
+
+
+### Installation on Linux via Ansible
+
+On a RHEL/Centos 7 system: [linuxhq.jackett](https://galaxy.ansible.com/linuxhq/jackett)
+
+On an Ubuntu 16 system: [chrisjohnson00.jackett](https://galaxy.ansible.com/chrisjohnson00/jackett)
+
 
 ## Installation on macOS
 
 ### Prerequisites
-Install [Mono 4.6](http://www.mono-project.com/download/#download-mac) or better (using the latest pkg installer is recommended).
- * Setup ssl support by running `curl -sS https://curl.haxx.se/ca/cacert.pem | cert-sync --user /dev/stdin`
+macOS 10.12 or greater
 
 ### Install as service
-1. Download and extract the latest `Jackett.Binaries.Mono.tar.gz` release from the [releases page](https://github.com/Jackett/Jackett/releases).
+1. Download and extract the latest `Jackett.Binaries.macOS.tar.gz` release from the [releases page](https://github.com/Jackett/Jackett/releases).
 2. Open the extracted folder and double-click on `install_service_macos`.
 3. If the installation was a success, you can close the Terminal window.
 
@@ -334,13 +480,16 @@ The service will start on each logon. You can always stop it by running `launchc
 Logs are stored as usual under `~/.config/Jackett/log.txt`.
 
 ### Run without installing as a service
-Download and extract the latest `Jackett.Binaries.Mono.tar.gz` release from the [releases page](https://github.com/Jackett/Jackett/releases) and run Jackett using mono with the command `mono --debug JackettConsole.exe`.
+Download and extract the latest `Jackett.Binaries.macOS.tar.gz` release from the [releases page](https://github.com/Jackett/Jackett/releases) and run Jackett with the command `./jackett`.
+
 
 ## Installation using Docker
 Detailed instructions are available at [LinuxServer.io Jackett Docker](https://hub.docker.com/r/linuxserver/jackett/). The Jackett Docker is highly recommended, especially if you are having Mono stability issues or having issues running Mono on your system eg. QNAP, Synology. Thanks to [LinuxServer.io](https://linuxserver.io)
 
+
 ## Installation on Synology
 Jackett is available as beta package from [SynoCommunity](https://synocommunity.com/)
+
 
 ## Running Jackett behind a reverse proxy
 When running jackett behind a reverse proxy make sure that the original hostname of the request is passed to Jackett. If HTTPS is used also set the X-Forwarded-Proto header to "https". Don't forget to adjust the "Base Path Override" Jackett option accordingly.
@@ -355,13 +504,25 @@ Example config for apache:
 </Location>
 ```
 
+Example config for nginx:
+```
+location /jackett {
+	proxy_pass http://127.0.0.1:9117;
+	proxy_set_header X-Real-IP $remote_addr;
+	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
+	proxy_set_header X-Forwarded-Host $http_host;
+	proxy_redirect off;
+}
+```
+
 ## Troubleshooting
 
 * __Command line switches__
 
   You can pass various options when running via the command line, see --help for details.
 
-* __Error "The underlying connection was closed: Could not establish trust relationship for the SSL/TLS secure channel."__
+* __Error "An error occurred while sending the request: Error: TrustFailure (A call to SSPI failed, see inner exception.)"__
 
   This is often caused by missing CA certificates.
   Try reimporting the certificates in this case:
@@ -375,32 +536,67 @@ Example config for apache:
   The logfiles (log.txt/updater.txt) are stored in `%ProgramData%\Jackett` on Windows and `~/.config/Jackett/` on Linux/macOS.
 
 ## Configuring OMDb
-This feature is used as a fallback to get the movie/series title if only the IMDB ID is provided in the request.
+This feature is used as a fallback (when using the aggregate Indexer) to get the movie/series title if only the IMDB ID is provided in the request.
 To use it, please just request a free API key on [OMDb](http://www.omdbapi.com/apikey.aspx) (1,000 daily requests limit) and paste the key in Jackett
 
 ## Creating an issue
 Please supply as much information about the problem you are experiencing as possible. Your issue has a much greater chance of being resolved if logs are supplied so that we can see what is going on. Creating an issue with '### isn't working' doesn't help anyone to fix the problem.
 
 ## Contributing
-All contributions are welcome just send a pull request.  Jackett's framework allows our team (and any other volunteering dev) to implement new trackers in an hour or two. If you'd like support for a new tracker but are not a developer then feel free to leave a request on the [issues page](https://github.com/Jackett/Jackett/issues).  It is recommended to use Visual Studio 2017 when making code changes in this project. You can download the community version for free [here](https://www.visualstudio.com/downloads/).
 
+Jackett's framework typically allows our team and volunteering developers to implement new trackers in a couple of hours
+
+Depending on logic complexity, there are two common ways new trackers are implemented:
+
+1. simple [definitions](http://github.com/Jackett/Jackett/tree/master/src/Jackett.Common/Definitions) (.yml / YAML), and;
+2. advanced (native) [indexers](http://github.com/Jackett/Jackett/tree/master/src/Jackett.Common/Indexers) (.cs / C#)
+
+Read more about the [simple definition format](https://github.com/Jackett/Jackett/wiki/Definition-format).
+
+If you are a developer then it's recommended to download the free community version of [Visual Studio](http://visualstudio.com)
+
+If you are not a developer and would like a (new) tracker supported then feel free to leave an [issue](https://github.com/Jackett/Jackett/issues) request.
+
+All contributions are welcome just send a pull request.
 
 ## Building from source
 
 ### Windows
-* Open the Jackett solution in Visual Studio 2017
-* Select Jackett.Console as startup project
+* Install the .NET Core [SDK](https://www.microsoft.com/net/download/windows)
+* Clone Jackett
+* Open Powershell and from the `src` directory, run `dotnet restore`
+* Open the Jackett solution in Visual Studio 2017 (version 15.9 or above)
+* Right click on the Jackett solution and click 'Rebuild Solution' to restore nuget packages
+* Select Jackett.Server as startup project
+* In the drop down menu of the run button select "Jackett.Server" instead of "IIS Express"
 * Build/Start the project
+
+### OSX
+
+
+```bash
+# manually install osx dotnet via: 
+https://dotnet.microsoft.com/download?initial-os=macos
+# then: 
+git clone https://github.com/Jackett/Jackett.git
+cd Jackett/src
+
+# dotnet core version
+dotnet publish Jackett.Server -f netcoreapp2.2 --self-contained -r osx-x64 -c Debug # takes care of everything
+./Jackett.Server/bin/Debug/netcoreapp2.2/osx-x64/jackett # run jackett
+```
 
 ### Linux
 
+
 ```bash
-sudo apt install mono-complete nuget msbuild # install build tools (debian/ubuntu)
+sudo apt install mono-complete nuget msbuild dotnet-sdk-2.2 # install build tools (debian/ubuntu)
 git clone https://github.com/Jackett/Jackett.git
 cd Jackett/src
-nuget restore Jackett.sln # prepare dependencies
-msbuild Jackett.Console/Jackett.Console.csproj /t:Build /p:Configuration=Debug # compile
-mono Jackett.Console/bin/Debug/JackettConsole.exe # run jackett
+
+# dotnet core version
+dotnet publish Jackett.Server -f netcoreapp2.2 --self-contained -r linux-x64 -c Debug # takes care of everything
+./Jackett.Server/bin/Debug/netcoreapp2.2/linux-x64/jackett # run jackett
 ```
 
 ## Screenshots

@@ -19,6 +19,10 @@ namespace Jackett.Common.Indexers
 {
     public class FileList : BaseWebIndexer
     {
+        public override string[] LegacySiteLinks { get; protected set; } = new string[] {
+            "http://filelist.ro/",
+        };
+
         private string LoginUrl { get { return SiteLink + "takelogin.php"; } }
         private string BrowseUrl { get { return SiteLink + "browse.php"; } }
 
@@ -31,7 +35,7 @@ namespace Jackett.Common.Indexers
         public FileList(IIndexerConfigurationService configService, WebClient wc, Logger l, IProtectionService ps)
             : base(name: "FileList",
                 description: "The best Romanian site.",
-                link: "http://filelist.ro/",
+                link: "https://filelist.ro/",
                 caps: TorznabUtil.CreateDefaultTorznabTVCaps(),
                 configService: configService,
                 client: wc,
@@ -43,7 +47,7 @@ namespace Jackett.Common.Indexers
             Language = "ro-ro";
             Type = "private";
 
-            TorznabCaps.SupportsImdbSearch = true;
+            TorznabCaps.SupportsImdbMovieSearch = true;
 
             AddCategoryMapping(24, TorznabCatType.TVAnime, "Anime");
             AddCategoryMapping(11, TorznabCatType.Audio, "Audio");
@@ -116,8 +120,8 @@ namespace Jackett.Common.Indexers
             }
 
             queryCollection.Add("cat", cat);
-            queryCollection.Add("searchin", "0");
-            queryCollection.Add("sort", "0");
+            queryCollection.Add("searchin", "1");
+            queryCollection.Add("sort", "2");
 
             searchUrl += "?" + queryCollection.GetQueryString();
 

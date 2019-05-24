@@ -4,7 +4,7 @@
   description: "HDCity is a SPANISH site for HD content"
   language: es-es
   type: private
-  encoding: UTF-8
+  encoding: ISO-8859-1
   links:
     - https://hdcity.li/
 
@@ -115,8 +115,20 @@
     modes:
       search: [q]
 
+  settings:
+    - name: username
+      type: text
+      label: Username
+    - name: password
+      type: password
+      label: Password
+    - name: info
+      type: info
+      label: "IP requirement"
+      default: "This site accepts only users with Spanish IP addresses.<br>For others it will return error: 403 Forbidden."
+
   login:
-    path: /index.php?page=login
+    path: index.php?page=login
     method: post
     inputs:
       uid: "{{ .Config.username }}"
@@ -129,11 +141,14 @@
 
   search:
     path: index.php
+    keywordsfilters:
+      - name: re_replace
+        args: ["S0?(\\d{1,2})E(\\d{1,2})", "$1x$2"]
     inputs:
       page: "torrents"
       $raw: "&category={{range .Categories}}{{.}};{{end}}"
       active: "1"
-      search: "{{ .Query.Keywords }}"
+      search: "{{ .Keywords }}"
     rows:
       selector: "#category+table table tr:not(:first-child):not(:last-child)"
     fields:
@@ -145,6 +160,9 @@
             args: category
       title:
         selector: td[valign="middle"] a
+        filters:
+          - name: append
+            args: " [spanish]"
       details:
         selector: td[valign="middle"] a
         attribute: href
@@ -162,7 +180,10 @@
       leechers:
         selector: td:nth-child(7) a
       grabs:
-        selector: td:nth-child(8) a
+        selector: td:nth-child(8)
+        filters:
+          - name: replace
+            args: ["---", "0"]
       date:
         selector: td:nth-child(5)
         filters:

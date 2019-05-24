@@ -19,7 +19,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon-180x180.png" />
     <link rel="mask-icon" href="jackett_medium.png" color="#35c5f4">
     <link rel="icon" type="image/ico" href="../favicon.ico" />
-    <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico' />
+    <link rel='shortcut icon' type='image/x-icon' href='../favicon.ico?' />
     <script type="text/javascript" src="../libs/filesize.min.js?changed=2017083001"></script>
     <script type="text/javascript" src="../libs/jquery.min.js?changed=2017083001"></script>
     <script type="text/javascript" src="../libs/jquery.dataTables.min.js?changed=2017083001" charset="utf8"></script>
@@ -30,12 +30,12 @@
     <script type="text/javascript" src="../bootstrap/bootstrap.min.js?changed=2017083001"></script>
     <script type="text/javascript" src="../libs/bootstrap-notify.js?changed=2017083001"></script>
     <script type="text/javascript" src="../libs/bootstrap-multiselect.js?changed=2017083001"></script>
-    <script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+    <!--<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>-->
 
     <link rel="stylesheet" type="text/css" href="../bootstrap/bootstrap.min.css?changed=2017083001">
     <link rel="stylesheet" type="text/css" href="../animate.css?changed=2017083001">
-    <link rel="stylesheet" type="text/css" href="../custom.css?changed=2017083001" media="only screen and (min-device-width: 480px)">
-    <link rel="stylesheet" type="text/css" href="../custom_mobile.css?changed=2017083001" media="only screen and (max-device-width: 480px)">
+    <link rel="stylesheet" type="text/css" href="../custom.css?changed=20190401" media="only screen and (min-device-width: 480px)">
+    <link rel="stylesheet" type="text/css" href="../custom_mobile.css?changed=20190401" media="only screen and (max-device-width: 480px)">
     <link rel="stylesheet" type="text/css" href="../css/jquery.dataTables.min.css?changed=2017083001">
     <link rel="stylesheet" type="text/css" href="../css/bootstrap-multiselect.css?changed=2017083001" />
     <link rel="stylesheet" type="text/css" href="../css/font-awesome.min.css?changed=2017083001">
@@ -51,6 +51,14 @@
             <input id="api-key-input" class="form-control input-right" type="text" value="" placeholder="API Key" readonly="">
         </div>
         <hr />
+
+        <div id="can-upgrade-from-mono" hidden class="alert alert-info" role="alert"> 
+            <strong>Standalone version of Jackett is now available - Mono not required</strong> <br>
+            To upgrade to the standalone version of Jackett, <a href="https://github.com/Jackett/Jackett#install-on-linux-amdx64" target="_blank" class="alert-link">click here</a> for install instructions. 
+            Upgrading is straight forward, simply install the standalone version and your indexers/configuration will carry over. 
+            Benefits include: increased performance, improved stability and no dependency on Mono. 
+        </div>
+
         <div class="pull-right">
             <button id="jackett-add-indexer" class="btn btn-success btn-sm">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add indexer
@@ -87,18 +95,20 @@
             <h4>Adding a Jackett indexer to RSS clients (RSS feed)</h4>
             <ol>
                 <li>Click on the indexers corresponding <button type="button" class="btn btn-xs btn-info">Copy RSS Feed</button> button and paste it into the URL field of the RSS client.</li>
-                <li>You can adjust the <b>q</b> (search string) and <b>cat</b> (categories) arguments accordingly.
-                E.g. <b>...&cat=2030,2040&q=big+buck+bunny</b> will search for "big buck bunny" in the Movies/SD (2030) and Movies/HD (2040) categories (See the indexer configuration for available categories).</li>
+                <li>
+                    You can adjust the <b>q</b> (search string) and <b>cat</b> (categories) arguments accordingly.
+                    E.g. <b>...&cat=2030,2040&q=big+buck+bunny</b> will search for "big buck bunny" in the Movies/SD (2030) and Movies/HD (2040) categories (See the indexer configuration for available categories).
+                </li>
             </ol>
         </div>
         <hr />
         <h3>Jackett Configuration</h3>
         <div class="text-center">
-            <div class="btn-group">
+            <div class="btn-toolbar">
                 <button id="change-jackett-port" class="btn btn-primary btn-sm">
                     <i class="fa fa-wrench"></i>   Apply server settings <span class="glyphicon glyphicon-ok-wrench" aria-hidden="true"></span>
                 </button>
-                <button id="view-jackett-logs" class="btn btn-danger btn-sm">
+                <button id="view-jackett-logs" class="btn btn-success btn-sm">
                     <i class="fa fa-rss"></i> View logs <span class="glyphicon glyphicon-ok-wrench" aria-hidden="true"></span>
                 </button>
                 <button id="trigger-updater" class="btn btn-warning btn-sm">
@@ -138,6 +148,11 @@
                 <option value="2">socks5</option>
             </select>
         </div>
+        <div id="proxy-warning" hidden>
+            <span>
+                WARNING: The proxy option potentially leaks requests. Recommendation is to use a VPN.
+            </span>
+        </div>
         <div class="input-area">
             <span class="input-header">Proxy url: </span>
             <input id="jackett-proxy-url" class="form-control input-right" type="text" value="" placeholder="Blank to disable">
@@ -152,7 +167,7 @@
         </div>
         <div class="input-area">
             <span class="input-header">Proxy password: </span>
-            <input id="jackett-proxy-password" class="form-control input-right" type="text" value="" placeholder="">
+            <input id="jackett-proxy-password" class="form-control input-right" type="password" value="" placeholder="">
         </div>
 
         <div class="input-area">
@@ -177,6 +192,10 @@
             <span class="input-header">OMDB API key: </span>
             <input id="jackett-omdbkey" class="form-control input-right" type="text" value="" placeholder="">
         </div>
+        <div class="input-area">
+            <span class="input-header">OMDB API Url: </span>
+            <input id="jackett-omdburl" class="form-control input-right" type="text" value="" placeholder="Blank for default">
+        </div>
         <hr />
         <div id="footer">
             <a href="https://github.com/Jackett/Jackett" target="_blank" title="Jackett on GitHub">Jackett</a> Version <span id="app-version"></span>
@@ -189,7 +208,7 @@
         <div class="setup-item-recaptcha">
             <p>This site requires you to solve a ReCaptcha. It's no longer possible to solve the captcha in Jackett. Please enter the cookie for the site manually. <a href="https://github.com/Jackett/Jackett/wiki/Finding-cookies" target="_blank">See here</a> on how get the cookies.</p>
             <div class="setup-item-label">Full cookie header</div>
-            <input class="form-control" type="text" value="" />
+            <input class="form-control" type="text" value="{{cookieheader}}" />
         </div>
     </script>
     <script id="setup-item" type="text/x-handlebars-template">
@@ -659,6 +678,6 @@
     </script>
 
     <script type="text/javascript" src="../libs/api.js?changed=2017083001"></script>
-    <script type="text/javascript" src="../custom.js?changed=2017110602"></script>
+    <script type="text/javascript" src="../custom.js?changed=20190427"></script>
 </body>
 </html>

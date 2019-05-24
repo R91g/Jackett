@@ -3,6 +3,7 @@ using Jackett.Common.Models;
 using Jackett.Common.Services.Interfaces;
 using Jackett.Common.Utils.Clients;
 using NLog;
+using System;
 
 namespace Jackett.Common.Indexers
 {
@@ -21,6 +22,7 @@ namespace Jackett.Common.Indexers
         {
             Language = "en-us";
             Type = "private";
+
 
             AddCategoryMapping(1, TorznabCatType.Audio, "Music");
             AddCategoryMapping(2, TorznabCatType.Movies, "Movies");

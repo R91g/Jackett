@@ -87,10 +87,15 @@ function loadJackettSettings() {
         $("#jackett-prerelease").attr('checked', data.prerelease);
         $("#jackett-logging").attr('checked', data.logging);
         $("#jackett-omdbkey").val(data.omdbkey);
+        $("#jackett-omdburl").val(data.omdburl);
         var password = data.password;
         $("#jackett-adminpwd").val(password);
         if (password != null && password != '') {
             $("#logoutBtn").show();
+        }
+
+        if (data.can_run_netcore != null && data.can_run_netcore === true) {
+            $("#can-upgrade-from-mono").show();
         }
 
         $.each(data.notices, function (index, value) {
@@ -99,6 +104,7 @@ function loadJackettSettings() {
         })
 
         reloadIndexers();
+        proxyWarning(data.proxy_url);
     });
 }
 
@@ -220,12 +226,12 @@ function displayUnconfiguredIndexersList() {
 		                    doNotify("Configuration failed: " + data.error, "danger", "glyphicon glyphicon-alert");
 		                }
 			        }).fail(function (data) {
-			            if(data.responseJSON.error !== undefined) {
-                doNotify("An error occured while configuring this indexer<br /><b>" + data.responseJSON.error + "</b><br /><i><a href=\"https://github.com/Jackett/Jackett/issues/new?title=[" + indexerId + "] " + data.responseJSON.error + " (Config)\" target=\"_blank\">Click here to open an issue on GitHub for this indexer.</a><i>", "danger", "glyphicon glyphicon-alert", false);
-            } else {
-                doNotify("An error occured while configuring this indexer, is Jackett server running ?", "danger", "glyphicon glyphicon-alert");
-            }
-                        
+                if(data.responseJSON.error !== undefined) {
+                  var indexEnd = 2048 - "https://github.com/Jackett/Jackett/issues/new?title=[".length - indexerId.length - "] ".length - " (Config)".length; // keep url <= 2k #5104
+                  doNotify("An error occured while configuring this indexer<br /><b>" + data.responseJSON.error.substring(0, indexEnd) + "</b><br /><i><a href=\"https://github.com/Jackett/Jackett/issues/new?title=[" + indexerId + "] " + data.responseJSON.error.substring(0, indexEnd) + " (Config)\" target=\"_blank\">Click here to open an issue on GitHub for this indexer.</a><i>", "danger", "glyphicon glyphicon-alert", false);
+                } else {
+                  doNotify("An error occured while configuring this indexer, is Jackett server running ?", "danger", "glyphicon glyphicon-alert");
+                }
 			        });
                 });
             });
@@ -442,12 +448,13 @@ function testIndexer(id, notifyResult) {
                 doNotify("Test failed for " + id + ": \n" + data.error, "danger", "glyphicon glyphicon-alert");
         }
     }).fail(function (data) {
-        updateTestState(id, "error", data.error, indexers);
-        if(data.responseJSON.error !== undefined && notifyResult) {
-                doNotify("An error occured while testing this indexer<br /><b>" + data.responseJSON.error + "</b><br /><i><a href=\"https://github.com/Jackett/Jackett/issues/new?title=[" + id + "] " + data.responseJSON.error + " (Test)\" target=\"_blank\">Click here to open an issue on GitHub for this indexer.</a><i>", "danger", "glyphicon glyphicon-alert", false);
-            } else {
-                doNotify("An error occured while testing indexers, please take a look at indexers with failed test for more informations.", "danger", "glyphicon glyphicon-alert");
-            }
+      updateTestState(id, "error", data.error, indexers);
+      if(data.responseJSON.error !== undefined && notifyResult) {
+        var indexEnd = 2048 - "https://github.com/Jackett/Jackett/issues/new?title=[".length - id.length - "] ".length - " (Test)".length; // keep url <= 2k #5104
+        doNotify("An error occured while testing this indexer<br /><b>" + data.responseJSON.error.substring(0, indexEnd) + "</b><br /><i><a href=\"https://github.com/Jackett/Jackett/issues/new?title=[" + id + "] " + data.responseJSON.error.substring(0, indexEnd) + " (Test)\" target=\"_blank\">Click here to open an issue on GitHub for this indexer.</a><i>", "danger", "glyphicon glyphicon-alert", false);
+      } else {
+        doNotify("An error occured while testing indexers, please take a look at indexers with failed test for more informations.", "danger", "glyphicon glyphicon-alert");
+      }
     });
 }
 
@@ -497,10 +504,14 @@ function populateConfigItems(configForm, config) {
             hasReacaptcha = true;
             captchaItem = config[i];
         }
+        else if (config[i].id === 'cookieheader' && hasReacaptcha) { // inject cookie into captcha item
+            captchaItem.cookieheader = config[i].value;
+            console.log(captchaItem);
+        }
     }
 
     var setupItemTemplate = Handlebars.compile($("#setup-item").html());
-    if (hasReacaptcha && !window.jackettIsLocal) {
+    if (hasReacaptcha && !window.jackettIsLocal && false) { // disable this for now, use inline cookie (below)
         var setupValueTemplate = Handlebars.compile($("#setup-item-nonlocalrecaptcha").html());
         captchaItem.value_element = setupValueTemplate(captchaItem);
         var template = setupItemTemplate(captchaItem);
@@ -509,11 +520,22 @@ function populateConfigItems(configForm, config) {
 
         for (var i = 0; i < config.length; i++) {
             var item = config[i];
-            var setupValueTemplate = Handlebars.compile($("#setup-item-" + item.type).html());
-            item.value_element = setupValueTemplate(item);
-            var template = setupItemTemplate(item);
-            $formItemContainer.append(template);
+            if ((item.id === 'username' || item.id === 'password') && hasReacaptcha) {
+                continue; // skip username/password if there's a recaptcha
+            }
+            if (item.type != 'recaptcha') {
+                var setupValueTemplate = Handlebars.compile($("#setup-item-" + item.type).html());
+                item.value_element = setupValueTemplate(item);
+                var template = setupItemTemplate(item);
+                $formItemContainer.append(template);
+            }
             if (item.type === 'recaptcha') {
+                // inject cookie dialog until recaptcha can be solved again
+                var setupValueTemplate = Handlebars.compile($("#setup-item-nonlocalrecaptcha").html());
+                captchaItem.value_element = setupValueTemplate(captchaItem);
+                var template = setupItemTemplate(captchaItem);
+                $formItemContainer.append(template);
+                /*
                 var jackettrecaptcha = $('.jackettrecaptcha');
                 jackettrecaptcha.data("version", item.version);
                 switch (item.version) {
@@ -543,6 +565,7 @@ function populateConfigItems(configForm, config) {
                         });
                         break;
                 }
+                */
             }
         }
     }
@@ -633,11 +656,12 @@ function populateSetupForm(indexerId, name, config, caps, link, alternativesitel
                 doNotify("Configuration failed: " + data.error, "danger", "glyphicon glyphicon-alert");
             }
         }).fail(function (data) {
-            if(data.responseJSON.error !== undefined) {
-                doNotify("An error occured while updating this indexer<br /><b>" + data.responseJSON.error + "</b><br /><i><a href=\"https://github.com/Jackett/Jackett/issues/new?title=[" + indexerId + "] " + data.responseJSON.error + " (Config)\" target=\"_blank\">Click here to open an issue on GitHub for this indexer.</a><i>", "danger", "glyphicon glyphicon-alert", false);
-            } else {
-                doNotify("An error occured while updating this indexer, request to Jackett server failed, is server running ?", "danger", "glyphicon glyphicon-alert");
-            }
+          if(data.responseJSON.error !== undefined) {
+            var indexEnd = 2048 - "https://github.com/Jackett/Jackett/issues/new?title=[".length - indexerId.length - "] ".length - " (Config)".length; // keep url <= 2k #5104
+            doNotify("An error occured while updating this indexer<br /><b>" + data.responseJSON.error.substring(0, indexEnd) + "</b><br /><i><a href=\"https://github.com/Jackett/Jackett/issues/new?title=[" + indexerId + "] " + data.responseJSON.error.substring(0, indexEnd) + " (Config)\" target=\"_blank\">Click here to open an issue on GitHub for this indexer.</a><i>", "danger", "glyphicon glyphicon-alert", false);
+          } else {
+            doNotify("An error occured while updating this indexer, request to Jackett server failed, is server running ?", "danger", "glyphicon glyphicon-alert");
+          }
         }).always(function () {
             $goButton.html(originalBtnText);
             $goButton.prop('disabled', false);
@@ -714,16 +738,16 @@ function updateReleasesRow(row)
     labels.empty();
 
     if (IMDBId) {
-        labels.append('\n<a href="http://www.imdb.com/title/tt' + IMDBId + '/" class="label label-imdb" alt="IMDB" title="IMDB">IMDB</a>');
+        labels.append('\n<a href="http://www.imdb.com/title/tt' + ("000000" + IMDBId).slice(-7) + '/" class="label label-imdb" alt="IMDB" title="IMDB">IMDB</a>');
     }
 
     if (!isNaN(DownloadVolumeFactor)) {
         if (DownloadVolumeFactor == 0) {
             labels.append('\n<span class="label label-success">FREELEECH</span>');
         } else if (DownloadVolumeFactor < 1) {
-            labels.append('\n<span class="label label-primary">' + DownloadVolumeFactor * 100 + '%DL</span>');
+            labels.append('\n<span class="label label-primary">' + (DownloadVolumeFactor * 100).toFixed(0) + '%DL</span>');
         } else if (DownloadVolumeFactor > 1) {
-            labels.append('\n<span class="label label-danger">' + DownloadVolumeFactor * 100 + '%DL</span>');
+            labels.append('\n<span class="label label-danger">' + (DownloadVolumeFactor * 100).toFixed(0) + '%DL</span>');
         }
     }
 
@@ -731,7 +755,7 @@ function updateReleasesRow(row)
         if (UploadVolumeFactor == 0) {
             labels.append('\n<span class="label label-warning">NO UPLOAD</span>');
         } else if (UploadVolumeFactor != 1) {
-            labels.append('\n<span class="label label-info">' + UploadVolumeFactor * 100 + '%UL</span>');
+            labels.append('\n<span class="label label-info">' + (UploadVolumeFactor * 100).toFixed(0) + '%UL</span>');
         }
     }
 }
@@ -1134,6 +1158,7 @@ function bindUIButtons() {
         var jackett_prerelease = $("#jackett-prerelease").is(':checked'); 
         var jackett_logging = $("#jackett-logging").is(':checked');
         var jackett_omdb_key = $("#jackett-omdbkey").val();
+        var jackett_omdb_url = $("#jackett-omdburl").val();
 
         var jackett_proxy_url = $("#jackett-proxy-url").val();
         var jackett_proxy_type = $("#jackett-proxy-type").val();
@@ -1150,6 +1175,7 @@ function bindUIButtons() {
             logging: jackett_logging,
             basepathoverride: jackett_basepathoverride,
             omdbkey: jackett_omdb_key,
+            omdburl: jackett_omdb_url,
             proxy_type: jackett_proxy_type,
             proxy_url: jackett_proxy_url,
             proxy_port: jackett_proxy_port,
@@ -1202,4 +1228,18 @@ function bindUIButtons() {
             doNotify("Request to Jackett server failed", "danger", "glyphicon glyphicon-alert");
         });
     });
+
+    $('#jackett-proxy-url').on('input', function () {
+        proxyWarning($(this).val());
+    });
+}
+
+function proxyWarning(input) {
+    if (input != null && input.trim() !== "") {
+        $('#proxy-warning').show();
+    }
+    else
+    {
+        $('#proxy-warning').hide();
+    }
 }
